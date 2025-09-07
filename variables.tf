@@ -41,6 +41,6 @@ variable "private_subnet_cidrs" {
 variable "multi_az_db" {
   description = "Enable multi-AZ for RDS (costs more)"
   type        = bool
-  default     = false
+  default     = true
 }
 
