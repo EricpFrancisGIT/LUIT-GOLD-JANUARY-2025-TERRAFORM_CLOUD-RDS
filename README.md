@@ -27,23 +27,42 @@ Spin up a production‑style, **docs‑driven** two‑tier AWS stack using **Ter
 
 ---
 
-## 🗺️ Architecture
+## 🗺️ Architecture (GitHub‑safe Mermaid)
 
 ```mermaid
-flowchart LR
-  internet((Internet)) -->|HTTP 80| ALB[Application Load Balancer (public)]
-  subgraph Public_Subnets[Public Subnets (AZ-a / AZ-b)]
-    WS1[EC2 Web Server #1]
-    WS2[EC2 Web Server #2]
+graph LR
+  internet(("Internet"))
+  ALB["ALB (public)"]
+  WS1["Web #1 (EC2)"]
+  WS2["Web #2 (EC2)"]
+  RDS[(RDS MySQL)]
+
+  internet -->|HTTP 80| ALB
+
+  subgraph Public_Subnets ["Public Subnets AZ-a / AZ-b"]
+    WS1
+    WS2
   end
-  subgraph Private_Subnets[Private Subnets (AZ-a / AZ-b)]
-    RDS[(RDS MySQL)]
+
+  subgraph Private_Subnets ["Private Subnets AZ-a / AZ-b"]
+    RDS
   end
+
   ALB -->|HTTP 80| WS1
   ALB -->|HTTP 80| WS2
   WS1 -->|TCP 3306| RDS
   WS2 -->|TCP 3306| RDS
 ```
+<details><summary>ASCII fallback</summary>
+
+```
+Internet --HTTP:80--> [ ALB (public) ] --HTTP:80--> [ Web #1 ]
+                                          \--HTTP:80--> [ Web #2 ]
+
+[ Web #1 ] --TCP 3306--> ( RDS MySQL )
+[ Web #2 ] --TCP 3306--> ( RDS MySQL )
+```
+</details>
 
 ---
 
