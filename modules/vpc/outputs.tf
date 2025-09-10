@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = aws_vpc.this.id
+  value = aws_vpc.city_of_anaheim.id
 }
 
 output "public_subnet_ids" {

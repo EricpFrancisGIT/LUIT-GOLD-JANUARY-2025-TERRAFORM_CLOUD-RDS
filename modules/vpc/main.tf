@@ -1,4 +1,4 @@
-resource "aws_vpc" "this" {
+resource "aws_vpc" "city_of_anaheim" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -7,7 +7,7 @@ resource "aws_vpc" "this" {
 }
 
 resource "aws_internet_gateway" "this" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.city_of_anaheim.id
   tags   = { Name = "${var.project}-igw" }
 }
 
@@ -15,7 +15,7 @@ resource "aws_internet_gateway" "this" {
 resource "aws_subnet" "public" {
   for_each = { for idx, cidr in var.public_subnet_cidrs : tostring(idx) => cidr }
 
-  vpc_id                  = aws_vpc.this.id
+  vpc_id                  = aws_vpc.city_of_anaheim.id
   cidr_block              = each.value
   availability_zone       = var.azs[tonumber(each.key)]
   map_public_ip_on_launch = true
@@ -30,7 +30,7 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   for_each = { for idx, cidr in var.private_subnet_cidrs : tostring(idx) => cidr }
 
-  vpc_id            = aws_vpc.this.id
+  vpc_id            = aws_vpc.city_of_anaheim.id
   cidr_block        = each.value
   availability_zone = var.azs[tonumber(each.key)]
 
@@ -56,7 +56,7 @@ resource "aws_nat_gateway" "this" {
 
 # Public route table -> IGW
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.city_of_anaheim.id
   tags   = { Name = "${var.project}-public-rt" }
 }
 
@@ -68,7 +68,7 @@ resource "aws_route" "public_internet" {
 
 # Private route table -> NAT
 resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.city_of_anaheim.id
   tags   = { Name = "${var.project}-private-rt" }
 }
 
