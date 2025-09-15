@@ -24,7 +24,6 @@ variable "multi_az" {
   default = false
 }
 
-
 variable "master_username" {
   type    = string
   default = "admin"

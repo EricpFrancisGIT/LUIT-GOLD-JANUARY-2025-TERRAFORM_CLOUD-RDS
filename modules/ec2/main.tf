@@ -35,11 +35,11 @@ locals {
 
 
 # One instance per public subnet (stable keys from a map)
-resource "aws_instance" "web" {
+resource "aws_instance" "city_of_anaheim_instance" {
   for_each = var.public_subnet_map
 
   ami                         = data.aws_ami.al2023.id
-  instance_type               = "t3.micro"
+  instance_type               = "t2.micro"
   subnet_id                   = each.value
   vpc_security_group_ids      = [var.web_sg_id]
   associate_public_ip_address = true

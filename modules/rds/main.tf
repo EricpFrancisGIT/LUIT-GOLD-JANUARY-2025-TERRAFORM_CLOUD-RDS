@@ -2,13 +2,13 @@ locals {
   # Lowercase is sufficient for RDS DB subnet group name rules
   project_sanitized = lower(var.project)
 }
-resource "aws_db_subnet_group" "this" {
+resource "aws_db_subnet_group" "city_of_anaheim_db_subnet_group" {
   name       = "${local.project_sanitized}-db-subnets"
   subnet_ids = var.private_subnet_ids
   tags       = { Name = "${var.project}-db-subnets", Project = var.project, Tier = "db" }
 }
 
-resource "aws_db_instance" "this" {
+resource "aws_db_instance" "city_of_anaheim_db_instance" {
 
   engine            = var.engine
   engine_version    = var.engine_version
@@ -18,7 +18,7 @@ resource "aws_db_instance" "this" {
   username = var.master_username
   password = var.master_password
 
-  db_subnet_group_name   = aws_db_subnet_group.this.name
+  db_subnet_group_name   = aws_db_subnet_group.city_of_anaheim_db_subnet_group.name
   vpc_security_group_ids = [var.db_sg_id]
 
   publicly_accessible        = false

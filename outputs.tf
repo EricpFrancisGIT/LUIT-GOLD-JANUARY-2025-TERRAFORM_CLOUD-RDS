@@ -23,8 +23,5 @@ output "rds_port" {
 
 output "alb_dns_name" { value = module.alb.dns_name }
 output "alb_url" { value = "http://${module.alb.dns_name}" }
-output "web_public_ips" {
-  description = "Public IPs for the two web servers"
-  value       = module.ec2.public_ips
-}
+
 
