@@ -31,7 +31,7 @@ resource "aws_lb_target_group" "city_of_anaheim_web" {
 
   health_check {
     path                = var.health_check_path
-    healthy_threshold   = 2
+    healthy_threshold   = 4
     unhealthy_threshold = 2
     matcher             = "200-399"
     interval            = 30
