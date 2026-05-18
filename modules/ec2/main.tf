@@ -18,22 +18,7 @@ locals {
     echo "<h1>Greetings from ${var.project} — $(hostname)</h1>" > /usr/share/nginx/html/index.html
     systemctl start nginx
   EONGX
-
-  # Render this only if dd_api_key is set
-  datadog_userdata = var.dd_api_key == null ? "" : <<-EODD
-    # Datadog Agent install (Linux)
-    DD_API_KEY=${var.dd_api_key} DD_SITE=${var.dd_site} bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
-    if [ "${var.dd_logs_enabled}" = "true" ]; then
-      echo "logs_enabled: true" >> /etc/datadoghq-agent/datadog.yaml || true
-      systemctl restart datadog-agent || true
-    fi
-  EODD
-
-  # Final user-data = NGINX + (optional) Datadog
-  user_data = "${chomp(local.nginx_userdata)}\n${chomp(local.datadog_userdata)}"
 }
-
-
 # One instance per public subnet (stable keys from a map)
 resource "aws_instance" "city_of_anaheim_instance" {
   for_each = var.public_subnet_map
@@ -46,7 +31,7 @@ resource "aws_instance" "city_of_anaheim_instance" {
   key_name                    = var.key_name
   iam_instance_profile        = var.iam_instance_profile_name
 
-  user_data = local.user_data
+  user_data = local.nginx_userdata
 
   tags = {
     Name    = "${var.project}-web-${each.key}"

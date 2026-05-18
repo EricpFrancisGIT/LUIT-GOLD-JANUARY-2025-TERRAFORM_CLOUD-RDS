@@ -51,9 +51,7 @@ module "ec2" {
   web_sg_id                 = module.sg.web_sg_id
   key_name                  = var.key_name
   iam_instance_profile_name = aws_iam_instance_profile.ssm.name
-  dd_site                   = var.dd_site
-  # Optional:
-  dd_logs_enabled = true
+
 
 }
 

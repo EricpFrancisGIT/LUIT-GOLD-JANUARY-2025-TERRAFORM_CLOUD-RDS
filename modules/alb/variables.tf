@@ -20,16 +20,4 @@ variable "target_port" {
   default = 80
 }
 
-variable "dd_api_key" {
-  type      = string
-  sensitive = true
-  default   = null
-}
-variable "dd_site" {
-  type    = string
-  default = "datadoghq.com"
-}
-variable "dd_logs_enabled" {
-  type    = bool
-  default = true
-}
+
