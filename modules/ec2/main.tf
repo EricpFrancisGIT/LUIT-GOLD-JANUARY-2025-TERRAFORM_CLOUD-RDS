@@ -20,7 +20,7 @@ locals {
   EONGX
 }
 # One instance per public subnet (stable keys from a map)
-resource "aws_instance" "city_of_anaheim_instance" {
+resource "aws_instance" "template_instance" {
   for_each = var.public_subnet_map
 
   ami                         = data.aws_ami.al2023.id
@@ -34,8 +34,9 @@ resource "aws_instance" "city_of_anaheim_instance" {
   user_data = local.nginx_userdata
 
   tags = {
-    Name    = "${var.project}-web-${each.key}"
-    Project = var.project
-    Tier    = "web"
+    Name          = "${var.project}-web-${each.key}"
+    Project       = var.project
+    Tier          = "web"
+    PatchingGroup = "Linux-Critical"
   }
 }

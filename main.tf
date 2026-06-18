@@ -92,7 +92,7 @@ module "rds" {
 module "alb" {
   source                  = "./modules/alb"
   project                 = var.project
-  project_slug            = "city-of-anaheim-cloud-project"
+  project_slug            = "template-framework"
   vpc_id                  = module.vpc.vpc_id
   public_subnet_ids       = module.vpc.public_subnet_ids
   alb_sg_id               = module.sg.alb_sg_id

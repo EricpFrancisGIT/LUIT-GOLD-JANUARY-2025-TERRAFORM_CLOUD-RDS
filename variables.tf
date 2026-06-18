@@ -1,7 +1,7 @@
 variable "project" {
   description = "Project name prefix for tagging"
   type        = string
-  default     = "City Of Anaheim Cloud Project"
+  default     = "Template Framework Architecture"
 }
 
 

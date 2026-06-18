@@ -2,12 +2,12 @@
 locals {
   derived_slug = replace(replace(lower(var.project), " ", "-"), "_", "-")
   name_slug    = coalesce(var.project_slug, local.derived_slug)
-
-  alb_name = substr("alb-${local.name_slug}-alb", 0, 32)
-  tg_name  = substr("${local.name_slug}-tg", 0, 32)
+  raw_slug     = coalesce(var.project_slug, local.derived_slug)
+  alb_name     = substr("alb-${local.name_slug}-alb", 0, 32)
+  tg_name      = substr("${local.name_slug}-tg", 0, 32)
 }
 
-resource "aws_lb" "city_of_anaheim_alb" {
+resource "aws_lb" "template" {
   name               = local.alb_name
   internal           = false
   load_balancer_type = "application"
@@ -23,7 +23,7 @@ resource "aws_lb" "city_of_anaheim_alb" {
   }
 }
 
-resource "aws_lb_target_group" "city_of_anaheim_web" {
+resource "aws_lb_target_group" "template-targetgroup_web" {
   name     = local.tg_name
   port     = var.target_port
   protocol = "HTTP"
@@ -44,20 +44,20 @@ resource "aws_lb_target_group" "city_of_anaheim_web" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "city_of_anaheim_attach" {
+resource "aws_lb_target_group_attachment" "template_target_group_attach" {
   for_each         = var.target_instance_ids_map
-  target_group_arn = aws_lb_target_group.city_of_anaheim_web.arn
+  target_group_arn = aws_lb_target_group.template-targetgroup_web.arn
   target_id        = each.value
   port             = var.target_port
 }
 
-resource "aws_lb_listener" "city_of_anaheim_http" {
-  load_balancer_arn = aws_lb.city_of_anaheim_alb.arn
+resource "aws_lb_listener" "template_listener_http" {
+  load_balancer_arn = aws_lb.template.arn
   port              = var.listener_port
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.city_of_anaheim_web.arn
+    target_group_arn = aws_lb_target_group.template-targetgroup_web.arn
   }
 }

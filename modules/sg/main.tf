@@ -1,6 +1,6 @@
 # ALB SG: allow HTTP from the internet (add HTTPS later if needed)
-resource "aws_security_group" "city_of_anaheim_alb" {
-  name        = "city_of_anaheim_alb-sg"
+resource "aws_security_group" "template_alb" {
+  name        = "template_alb-sg"
   description = "ALB security group"
   vpc_id      = var.vpc_id
 
@@ -28,12 +28,12 @@ resource "aws_security_group" "city_of_anaheim_alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "city_of_anaheim_alb-sg" }
+  tags = { Name = "template_alb-sg" }
 }
 
 # Web SG: HTTP only from ALB; optional SSH from your IP
-resource "aws_security_group" "city_of_anaheim_web" {
-  name        = "city_of_anaheim_web-sg"
+resource "aws_security_group" "template_web" {
+  name        = "template_web-sg"
   description = "Web tier SG"
   vpc_id      = var.vpc_id
 
@@ -43,7 +43,7 @@ resource "aws_security_group" "city_of_anaheim_web" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.city_of_anaheim_alb.id]
+    security_groups = [aws_security_group.template_alb.id]
   }
 
   # Optional SSH from your IP
@@ -65,12 +65,12 @@ resource "aws_security_group" "city_of_anaheim_web" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "city_of_anaheim_web-sg" }
+  tags = { Name = "template_web-sg" }
 }
 
 # DB SG: allow MySQL only from web tier
-resource "aws_security_group" "city_of_anaheim_db" {
-  name        = "city_of_anaheim_db-sg"
+resource "aws_security_group" "template_db" {
+  name        = "template_db-sg"
   description = "DB tier SG"
   vpc_id      = var.vpc_id
 
@@ -79,7 +79,7 @@ resource "aws_security_group" "city_of_anaheim_db" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.city_of_anaheim_web.id]
+    security_groups = [aws_security_group.template_web.id]
   }
 
   egress {
@@ -89,5 +89,5 @@ resource "aws_security_group" "city_of_anaheim_db" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "city_of_anaheim_db-sg" }
+  tags = { Name = "template_db-sg" }
 }

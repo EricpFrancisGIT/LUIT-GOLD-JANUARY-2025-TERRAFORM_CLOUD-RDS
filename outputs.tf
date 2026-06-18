@@ -1,3 +1,17 @@
+output "vpc_id" {
+  description = "VPC ID"
+  value       = module.vpc.vpc_id
+}
+
+output "vpc_private_subnet_ids" {
+  description = "Private subnet IDs in the VPC"
+  value       = module.vpc.private_subnet_ids
+}
+
+output "vpc_public_subnet_ids" {
+  description = "Public subnet IDs in the VPC"
+  value       = module.vpc.public_subnet_ids
+}
 output "ec2_public_ips" {
   description = "Public IPs for the two web servers"
   value       = module.ec2.public_ips
