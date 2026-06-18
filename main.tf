@@ -5,12 +5,29 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+########################
+# Windows Server 2022 #
+########################
+data "aws_ami" "windows2022" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["Windows_Server-2022-English-Full-Base-*"]
+  }
+}
 
 locals {
   azs = slice(data.aws_availability_zones.available.names, 0, 2)
 }
 locals {
   web_subnet_map = {
+    az1 = module.vpc.public_subnet_ids[0]
+    az2 = module.vpc.public_subnet_ids[1]
+  }
+
+  windows_subnet_map = {
     az1 = module.vpc.public_subnet_ids[0]
     az2 = module.vpc.public_subnet_ids[1]
   }
@@ -54,7 +71,41 @@ module "ec2" {
 
 
 }
+module "ec2_windows01" {
+  source = "./modules/ec2/ec2_windows01"
 
+  project       = var.project
+  instance_name = "template-framework-win01"
+
+  ami_id        = data.aws_ami.windows2022.id
+  instance_type = "t3.large"
+
+  subnet_id                   = module.vpc.public_subnet_ids[0]
+  security_group_ids          = [module.sg.web_sg_id]
+  key_name                    = var.key_name
+  iam_instance_profile        = aws_iam_instance_profile.ssm.name
+  associate_public_ip_address = true
+
+  user_data = file("${path.module}/scripts/windows-iis.ps1")
+}
+
+module "ec2_windows02" {
+  source = "./modules/ec2/ec2_windows01"
+
+  project       = var.project
+  instance_name = "template-framework-win02"
+
+  ami_id        = data.aws_ami.windows2022.id
+  instance_type = "t3.large"
+
+  subnet_id                   = module.vpc.public_subnet_ids[1]
+  security_group_ids          = [module.sg.web_sg_id]
+  key_name                    = var.key_name
+  iam_instance_profile        = aws_iam_instance_profile.ssm.name
+  associate_public_ip_address = true
+
+  user_data = file("${path.module}/scripts/windows-iis.ps1")
+}
 
 #############################################
 # Secure, RDS-safe password generation #

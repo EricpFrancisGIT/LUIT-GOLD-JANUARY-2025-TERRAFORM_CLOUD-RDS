@@ -40,3 +40,4 @@ resource "aws_instance" "template_instance" {
     PatchingGroup = "Linux-Critical"
   }
 }
+

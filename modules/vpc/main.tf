@@ -41,13 +41,13 @@ resource "aws_subnet" "template_private" {
 }
 
 # NAT in first public subnet ("0")
-resource "aws_eip" "city_of_anaheim_nat" {
+resource "aws_eip" "template_nat" {
   domain = "vpc"
   tags   = { Name = "${var.project}-nat-eip" }
 }
 
-resource "aws_nat_gateway" "city_of_anaheim" {
-  allocation_id = aws_eip.city_of_anaheim_nat.id
+resource "aws_nat_gateway" "template_nat" {
+  allocation_id = aws_eip.template_nat.id
   subnet_id     = aws_subnet.template_public["0"].id
   tags          = { Name = "${var.project}-nat" }
 
@@ -60,7 +60,7 @@ resource "aws_route_table" "template_public" {
   tags   = { Name = "${var.project}-public-rt" }
 }
 
-resource "aws_route" "city_of_anaheim_public_internet" {
+resource "aws_route" "template_public_internet" {
   route_table_id         = aws_route_table.template_public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.template.id
@@ -75,7 +75,7 @@ resource "aws_route_table" "template_private" {
 resource "aws_route" "template_private_nat" {
   route_table_id         = aws_route_table.template_private.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.city_of_anaheim.id
+  nat_gateway_id         = aws_nat_gateway.template_nat.id
 }
 
 # Associations
